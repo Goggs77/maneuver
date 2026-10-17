@@ -1,0 +1,26 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_heavy_core": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:heavy_core"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_heavy_core"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "maneuver:gravity_field"
+    ]
+  }
+}
+

@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "amethyst_maneuver",
+  "key": {
+    "B": "minecraft:amethyst_block",
+    "H": "minecraft:honeycomb",
+    "S": "minecraft:amethyst_shard",
+    "W": "#minecraft:wool"
+  },
+  "pattern": [
+    "WHW",
+    "SBS",
+    "WHW"
+  ],
+  "result": {
+    "count": 1,
+    "id": "maneuver:damper"
+  }
+}
+

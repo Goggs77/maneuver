@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "maneuver:block/gravity_field_bottom_off",
+    "side": "maneuver:block/gravity_field_side_off",
+    "top": "maneuver:block/gravity_field_top_off"
+  }
+}
+

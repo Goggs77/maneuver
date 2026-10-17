@@ -1,0 +1,24 @@
+{
+  "block.maneuver.gravity_field": "Amethyst Gravity Anchor",
+  "block.maneuver.damper": "Amethyst Damper",
+  "gui.maneuver.offset": "Offset",
+  "gui.maneuver.size": "Size",
+  "gui.maneuver.gravity": "Gravity",
+  "gui.maneuver.radius": "Radius",
+  "gui.maneuver.strength": "Strength (%)",
+  "gui.maneuver.active": "Field: Active",
+  "gui.maneuver.inactive": "Field: Inactive",
+  "gui.maneuver.range_on": "Range: On",
+  "gui.maneuver.range_off": "Range: Off",
+  "gui.maneuver.creative_on": "Creative: On",
+  "gui.maneuver.creative_off": "Creative: Off",
+  "gui.maneuver.apply": "Apply",
+  "gui.maneuver.invalid_number": "Please enter valid numbers.",
+  "gui.maneuver.gravity_help": "Gravity in g: -1 is normal, 0 is weightless.",
+  "gui.maneuver.field_bounds_help": "Offsets %s..%s; size %s..%s blocks per axis.",
+  "gui.maneuver.radius_help": "Radius 1..%s blocks.",
+  "gui.maneuver.damper_help": "Exponential drag plus proportional fall-damage reduction. Range shows when you are near.",
+  "message.maneuver.gravity_saved": "Gravity field calibrated.",
+  "message.maneuver.damper_saved": "Damper calibrated."
+}
+

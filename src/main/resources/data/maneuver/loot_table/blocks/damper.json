@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "maneuver:damper"
+        }
+      ],
+      "rolls": 1
+    }
+  ],
+  "random_sequence": "maneuver:blocks/damper"
+}
+

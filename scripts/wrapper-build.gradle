@@ -1,0 +1,5 @@
+tasks.named("wrapper", Wrapper) {
+    gradleVersion = "9.8.0"
+    distributionType = Wrapper.DistributionType.BIN
+    validateDistributionUrl = false
+}

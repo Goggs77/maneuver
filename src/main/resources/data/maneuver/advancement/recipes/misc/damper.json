@@ -1,0 +1,25 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_honeycomb": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:honeycomb"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_honeycomb"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "maneuver:damper"
+    ]
+  }
+}

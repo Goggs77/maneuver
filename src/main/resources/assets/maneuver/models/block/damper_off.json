@@ -1,0 +1,9 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "maneuver:block/damper_bottom_off",
+    "side": "maneuver:block/damper_side_off",
+    "top": "maneuver:block/damper_top_off"
+  }
+}
+

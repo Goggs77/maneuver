@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "id": "maneuver",
+  "version": "${version}",
+  "name": "Amethyst Maneuver",
+  "description": "Amethyst-powered gravity fields and exponential dampers that reshape survival movement.",
+  "authors": [
+    "Goggs"
+  ],
+  "contact": {},
+  "license": "MIT",
+  "icon": "assets/maneuver/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.goggs.maneuver.Maneuver"
+    ],
+    "client": [
+      "com.goggs.maneuver.ManeuverClient"
+    ]
+  },
+  "mixins": [
+    "maneuver.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.19.3",
+    "minecraft": "~26.2",
+    "java": ">=25",
+    "fabric-api": "*"
+  }
+}
+

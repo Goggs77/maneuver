@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "active=true": {
+      "model": "maneuver:block/damper"
+    },
+    "active=false": {
+      "model": "maneuver:block/damper_off"
+    }
+  }
+}
+

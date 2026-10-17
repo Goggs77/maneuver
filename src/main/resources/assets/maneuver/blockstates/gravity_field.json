@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "active=true": {
+      "model": "maneuver:block/gravity_field"
+    },
+    "active=false": {
+      "model": "maneuver:block/gravity_field_off"
+    }
+  }
+}
+
