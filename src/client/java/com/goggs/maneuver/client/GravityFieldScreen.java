@@ -13,8 +13,6 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 
-import java.util.Locale;
-
 public final class GravityFieldScreen extends AbstractContainerScreen<GravityFieldScreenHandler> {
     private EditBox offsetX;
     private EditBox offsetY;
@@ -99,8 +97,8 @@ public final class GravityFieldScreen extends AbstractContainerScreen<GravityFie
                 18,
                 Component.empty()
         );
-        field.setMaxLength(8);
-        field.setValue(String.format(Locale.ROOT, "%.2f", value));
+        field.setMaxLength(12);
+        field.setValue(Float.toString(value));
         addRenderableWidget(field);
         return field;
     }
@@ -122,12 +120,12 @@ public final class GravityFieldScreen extends AbstractContainerScreen<GravityFie
     private void apply() {
         try {
             FieldBounds bounds = new FieldBounds(
-                    parseInt(offsetX),
-                    parseInt(offsetY),
-                    parseInt(offsetZ),
-                    parseInt(sizeX),
-                    parseInt(sizeY),
-                    parseInt(sizeZ)
+                    parseFloat(offsetX),
+                    parseFloat(offsetY),
+                    parseFloat(offsetZ),
+                    parseFloat(sizeX),
+                    parseFloat(sizeY),
+                    parseFloat(sizeZ)
             );
             GravityVector gravity = new GravityVector(
                     parseFloat(gravityX),
@@ -147,10 +145,6 @@ public final class GravityFieldScreen extends AbstractContainerScreen<GravityFie
         } catch (NumberFormatException exception) {
             error = Component.translatable("gui.maneuver.invalid_number");
         }
-    }
-
-    private static int parseInt(EditBox field) {
-        return (int) Math.round(Double.parseDouble(field.getValue().trim()));
     }
 
     private static float parseFloat(EditBox field) {

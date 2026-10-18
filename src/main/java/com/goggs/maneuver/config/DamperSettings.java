@@ -5,18 +5,18 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 public record DamperSettings(
-        int radius,
+        float radius,
         float strength,
         boolean active,
         boolean showRange,
         boolean affectCreative
 ) {
-    public static final int MIN_RADIUS = 1;
-    public static final int MAX_RADIUS = 32;
+    public static final float MIN_RADIUS = 0.5f;
+    public static final float MAX_RADIUS = 32.0f;
 
     public static final StreamCodec<RegistryFriendlyByteBuf, DamperSettings> PACKET_CODEC =
             StreamCodec.composite(
-                    ByteBufCodecs.INT, DamperSettings::radius,
+                    ByteBufCodecs.FLOAT, DamperSettings::radius,
                     ByteBufCodecs.FLOAT, DamperSettings::strength,
                     ByteBufCodecs.BOOL, DamperSettings::active,
                     ByteBufCodecs.BOOL, DamperSettings::showRange,
@@ -30,7 +30,7 @@ public record DamperSettings(
     }
 
     public static DamperSettings defaults() {
-        return new DamperSettings(6, 0.55f, true, true, false);
+        return new DamperSettings(6.0f, 0.55f, true, true, false);
     }
 
     public DamperSettings withActive(boolean active) {

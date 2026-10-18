@@ -6,17 +6,17 @@ package com.goggs.maneuver.physics;
  * malformed client payload can never create an unbounded field.
  */
 public record FieldBounds(
-        int offsetX,
-        int offsetY,
-        int offsetZ,
-        int sizeX,
-        int sizeY,
-        int sizeZ
+        float offsetX,
+        float offsetY,
+        float offsetZ,
+        float sizeX,
+        float sizeY,
+        float sizeZ
 ) {
-    public static final int MIN_OFFSET = -64;
-    public static final int MAX_OFFSET = 64;
-    public static final int MIN_SIZE = 1;
-    public static final int MAX_SIZE = 96;
+    public static final float MIN_OFFSET = -64.0f;
+    public static final float MAX_OFFSET = 64.0f;
+    public static final float MIN_SIZE = 0.0625f;
+    public static final float MAX_SIZE = 96.0f;
 
     public FieldBounds {
         offsetX = clamp(offsetX, MIN_OFFSET, MAX_OFFSET);
@@ -28,35 +28,35 @@ public record FieldBounds(
     }
 
     public static FieldBounds defaults() {
-        return new FieldBounds(-4, -2, -4, 9, 5, 9);
+        return new FieldBounds(-4.0f, -2.0f, -4.0f, 9.0f, 5.0f, 9.0f);
     }
 
-    public int minX(int anchorX) {
+    public double minX(int anchorX) {
         return anchorX + offsetX;
     }
 
-    public int minY(int anchorY) {
+    public double minY(int anchorY) {
         return anchorY + offsetY;
     }
 
-    public int minZ(int anchorZ) {
+    public double minZ(int anchorZ) {
         return anchorZ + offsetZ;
     }
 
-    public int maxX(int anchorX) {
+    public double maxX(int anchorX) {
         return minX(anchorX) + sizeX;
     }
 
-    public int maxY(int anchorY) {
+    public double maxY(int anchorY) {
         return minY(anchorY) + sizeY;
     }
 
-    public int maxZ(int anchorZ) {
+    public double maxZ(int anchorZ) {
         return minZ(anchorZ) + sizeZ;
     }
 
-    public long volume() {
-        return (long) sizeX * sizeY * sizeZ;
+    public double volume() {
+        return (double) sizeX * sizeY * sizeZ;
     }
 
     public boolean contains(int anchorX, int anchorY, int anchorZ, double x, double y, double z) {
@@ -65,7 +65,7 @@ public record FieldBounds(
                 && z >= minZ(anchorZ) && z < maxZ(anchorZ);
     }
 
-    private static int clamp(int value, int min, int max) {
+    private static float clamp(float value, float min, float max) {
         return Math.max(min, Math.min(max, value));
     }
 }

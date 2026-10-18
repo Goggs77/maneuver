@@ -35,8 +35,8 @@ public final class DamperScreen extends AbstractContainerScreen<DamperScreenHand
         int left = leftPos + 20;
 
         radius = new EditBox(font, left + 92, topPos + 42, 54, 18, Component.empty());
-        radius.setMaxLength(3);
-        radius.setValue(Integer.toString(settings.radius()));
+        radius.setMaxLength(12);
+        radius.setValue(Float.toString(settings.radius()));
         addRenderableWidget(radius);
 
         strength = new EditBox(font, left + 92, topPos + 70, 54, 18, Component.empty());
@@ -86,7 +86,7 @@ public final class DamperScreen extends AbstractContainerScreen<DamperScreenHand
 
     private void apply() {
         try {
-            int parsedRadius = (int) Math.round(Double.parseDouble(radius.getValue().trim()));
+            float parsedRadius = Float.parseFloat(radius.getValue().trim());
             float parsedPercent = Float.parseFloat(strength.getValue().trim());
             DamperSettings settings = new DamperSettings(
                     parsedRadius,
@@ -123,7 +123,11 @@ public final class DamperScreen extends AbstractContainerScreen<DamperScreenHand
 
         int infoY = 164;
         infoY = drawWrapped(graphics,
-                Component.translatable("gui.maneuver.radius_help", DamperSettings.MAX_RADIUS),
+                Component.translatable(
+                        "gui.maneuver.radius_help",
+                        DamperSettings.MIN_RADIUS,
+                        DamperSettings.MAX_RADIUS
+                ),
                 20, infoY, imageWidth - 40, 0xFFC9B9EA);
         infoY = drawWrapped(graphics,
                 Component.translatable("gui.maneuver.damper_help"),

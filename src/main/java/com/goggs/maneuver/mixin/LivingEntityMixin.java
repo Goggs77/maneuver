@@ -2,14 +2,40 @@ package com.goggs.maneuver.mixin;
 
 import com.goggs.maneuver.physics.DamperMath;
 import com.goggs.maneuver.physics.DampingTracker;
+import com.goggs.maneuver.physics.CeilingFlightTracker;
 import com.goggs.maneuver.physics.FallDamageMath;
+import com.goggs.maneuver.block.entity.GravityFieldBlockEntity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin implements CeilingFlightTracker {
+    @Shadow
+    protected abstract float getJumpPower();
+
+    @Unique
+    private boolean maneuver$ceilingFlightActive;
+
+    @Unique
+    private long maneuver$ceilingFlightTick = Long.MIN_VALUE;
+
+    @Unique
+    private long maneuver$ceilingFlightControlTick = Long.MIN_VALUE;
+
+    @Inject(method = "jumpFromGround", at = @At("HEAD"), cancellable = true)
+    private void maneuver$suppressUpwardFieldJump(CallbackInfo callbackInfo) {
+        if ((Object) this instanceof Player player && GravityFieldBlockEntity.suppressesGroundJump(player)) {
+            callbackInfo.cancel();
+        }
+    }
+
     @ModifyVariable(
             method = "calculateFallDamage",
             at = @At("HEAD"),
@@ -39,6 +65,39 @@ public abstract class LivingEntityMixin {
         tracker.maneuver$resetFieldGravity();
 
         return effectiveDistance * (1.0d - fraction);
+    }
+
+    @Override
+    public float maneuver$getJumpPower() {
+        return getJumpPower();
+    }
+
+    @Override
+    public boolean maneuver$isCeilingFlightActive(long gameTime) {
+        if (!this.maneuver$ceilingFlightActive) {
+            return false;
+        }
+        if (gameTime == this.maneuver$ceilingFlightTick
+                || gameTime == this.maneuver$ceilingFlightTick + 1L) {
+            return true;
+        }
+        this.maneuver$ceilingFlightActive = false;
+        return false;
+    }
+
+    @Override
+    public void maneuver$setCeilingFlightActive(boolean active, long gameTime) {
+        this.maneuver$ceilingFlightActive = active;
+        this.maneuver$ceilingFlightTick = gameTime;
+    }
+
+    @Override
+    public boolean maneuver$tryBeginCeilingFlightStep(long gameTime) {
+        if (this.maneuver$ceilingFlightControlTick == gameTime) {
+            return false;
+        }
+        this.maneuver$ceilingFlightControlTick = gameTime;
+        return true;
     }
 }
 

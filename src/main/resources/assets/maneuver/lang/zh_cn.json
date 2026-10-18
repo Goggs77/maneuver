@@ -16,7 +16,7 @@
   "gui.maneuver.invalid_number": "请输入有效数字。",
   "gui.maneuver.gravity_help": "重力单位为 g：-1 为正常重力，0 为失重。",
   "gui.maneuver.field_bounds_help": "偏移 %s..%s；每轴尺寸 %s..%s 格。",
-  "gui.maneuver.radius_help": "半径 1..%s 格。",
+  "gui.maneuver.radius_help": "半径 %s..%s 格。",
   "gui.maneuver.damper_help": "对空中实体施加减速，并按速度平方削减坠落伤害。",
   "message.maneuver.gravity_saved": "重力场已校准。",
   "message.maneuver.damper_saved": "阻尼器已校准。"

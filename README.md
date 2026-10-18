@@ -95,7 +95,7 @@ system `JAVA_HOME` points at JDK 21.
 The verified build is already available at:
 
 ```text
-build/libs/maneuver-1.0.7.jar
+build/libs/maneuver-1.0.10.jar
 ```
 
 Install it in a Minecraft 26.2 Fabric profile with Fabric API. Rebuild it with:
@@ -154,6 +154,11 @@ Outline points are generated at a fixed density per block of edge length or
 sphere circumference, so larger fields remain equally legible without
 exhausting the particle budget.
 
+All editable numeric fields use floating-point parsing. Gravity, offsets,
+sizes, radius, and strength retain float precision while still being clamped
+to safe limits. Field sizes range from `0.0625..96` blocks per axis and damper
+radius ranges from `0.5..32` blocks.
+
 Both editors also include **Creative: On/Off**. It defaults to off; when
 enabled, the block affects creative players as well.
 
@@ -191,6 +196,34 @@ Inverting that equation maps the impact speed back to the equivalent fall
 distance under the current field acceleration. Zero or upward acceleration
 uses vanilla gravity as the mapping fallback. The same formula is covered by
 the offline physics checks.
+
+## Ceiling-assisted descent
+
+In fields configured with `gravity_y >= 0`, a player whose head is blocked by a
+ceiling can press jump to push away from it using the normal jump-strength and
+jump-boost calculation. Holding space enters a reversed creative-flight
+controller:
+
+```text
+vertical acceleration = flyingSpeed * 3
+next velocity = 0.6 * (current velocity - vertical acceleration)
+terminal descent = 4.5 * flyingSpeed
+```
+
+The standard creative flying speed of `0.05` therefore approaches a terminal
+downward speed of `0.225` blocks/tick. Releasing space stops the controller.
+Zero gravity then leaves vertical motion alone, while positive Y gravity
+resumes accelerating the player upward. Players already using actual creative
+flight are left to vanilla flight controls.
+
+Holding jump while grounded in a positive-Y field suppresses vanilla jumping
+and the field's upward lift for that tick, so the player remains attached to
+the ground instead of repeatedly jumping.
+
+Holding jump while airborne in a zero or positive-Y field also enters the same
+reversed creative-flight controller without requiring ceiling contact. In that
+case the initial downward jump impulse is omitted; only the smooth descent
+acceleration is applied.
 
 ## Offline checks
 

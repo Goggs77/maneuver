@@ -9,12 +9,12 @@ import net.minecraft.network.codec.StreamCodec;
 public final class PhysicsPacketCodecs {
     public static final StreamCodec<RegistryFriendlyByteBuf, FieldBounds> BOUNDS =
             StreamCodec.composite(
-                    ByteBufCodecs.INT, FieldBounds::offsetX,
-                    ByteBufCodecs.INT, FieldBounds::offsetY,
-                    ByteBufCodecs.INT, FieldBounds::offsetZ,
-                    ByteBufCodecs.INT, FieldBounds::sizeX,
-                    ByteBufCodecs.INT, FieldBounds::sizeY,
-                    ByteBufCodecs.INT, FieldBounds::sizeZ,
+                    ByteBufCodecs.FLOAT, FieldBounds::offsetX,
+                    ByteBufCodecs.FLOAT, FieldBounds::offsetY,
+                    ByteBufCodecs.FLOAT, FieldBounds::offsetZ,
+                    ByteBufCodecs.FLOAT, FieldBounds::sizeX,
+                    ByteBufCodecs.FLOAT, FieldBounds::sizeY,
+                    ByteBufCodecs.FLOAT, FieldBounds::sizeZ,
                     FieldBounds::new
             );
 

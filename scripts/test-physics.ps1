@@ -25,6 +25,7 @@ try {
         (Join-Path $projectRoot "src/main/java/com/goggs/maneuver/physics/FieldBounds.java"),
         (Join-Path $projectRoot "src/main/java/com/goggs/maneuver/physics/GravityVector.java"),
         (Join-Path $projectRoot "src/main/java/com/goggs/maneuver/physics/DamperMath.java"),
+        (Join-Path $projectRoot "src/main/java/com/goggs/maneuver/physics/CeilingFlightMath.java"),
         (Join-Path $projectRoot "src/main/java/com/goggs/maneuver/physics/FallDamageMath.java"),
         (Join-Path $projectRoot "scripts/physics/PhysicsSelfTest.java")
     )

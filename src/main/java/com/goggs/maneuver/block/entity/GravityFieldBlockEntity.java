@@ -2,8 +2,11 @@ package com.goggs.maneuver.block.entity;
 
 import com.goggs.maneuver.block.GravityFieldBlock;
 import com.goggs.maneuver.config.GravityFieldSettings;
+import com.goggs.maneuver.physics.CeilingFlightTracker;
+import com.goggs.maneuver.physics.CeilingFlightMath;
 import com.goggs.maneuver.physics.DampingTracker;
 import com.goggs.maneuver.physics.FieldBounds;
+import com.goggs.maneuver.physics.FieldRegistry;
 import com.goggs.maneuver.physics.GravityVector;
 import com.goggs.maneuver.registry.ManeuverBlockEntities;
 import com.goggs.maneuver.screen.GravityFieldData;
@@ -58,11 +61,18 @@ public final class GravityFieldBlockEntity extends BlockEntity implements Extend
                 getVolumeBox(),
                 candidate -> isAffected(candidate, affectCreative)
         )) {
-            double appliedY = entity.onGround() && gravity.accelerationY() <= 0.0d
-                    ? 0.0d
-                    : deltaY;
-            entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, appliedY, deltaZ));
-            entity.needsSync = true;
+            boolean reversedFlight = handleReversedFlight(level, entity, gravity);
+            if (reversedFlight) {
+                Vec3 velocity = entity.getDeltaMovement();
+                entity.setDeltaMovement(velocity.x + deltaX, velocity.y, velocity.z + deltaZ);
+                entity.needsSync = true;
+            } else {
+                double appliedY = entity.onGround() && gravity.accelerationY() <= 0.0d
+                        ? 0.0d
+                        : deltaY;
+                entity.setDeltaMovement(entity.getDeltaMovement().add(deltaX, appliedY, deltaZ));
+                entity.needsSync = true;
+            }
 
             double downwardDelta = -gravity.deltaY();
             if (Math.abs(downwardDelta) > 1.0e-9d) {
@@ -72,6 +82,62 @@ public final class GravityFieldBlockEntity extends BlockEntity implements Extend
                 );
             }
         }
+    }
+
+    private static boolean handleReversedFlight(Level level, Entity entity, GravityVector gravity) {
+        if (gravity.y() < 0.0f || !(entity instanceof Player player) || player.getAbilities().flying) {
+            return false;
+        }
+
+        CeilingFlightTracker tracker = (CeilingFlightTracker) player;
+        long gameTime = level.getGameTime();
+        if (!player.isJumping()) {
+            tracker.maneuver$setCeilingFlightActive(false, gameTime);
+            return false;
+        }
+
+        if (gravity.y() > 0.0f && player.onGround()) {
+            Vec3 velocity = player.getDeltaMovement();
+            if (velocity.y > 0.0d) {
+                player.setDeltaMovement(velocity.x, 0.0d, velocity.z);
+            }
+            tracker.maneuver$setCeilingFlightActive(false, gameTime);
+            return true;
+        }
+
+        boolean headBlocked = player.verticalCollision && !player.verticalCollisionBelow;
+        boolean active = tracker.maneuver$isCeilingFlightActive(gameTime);
+        if (!tracker.maneuver$tryBeginCeilingFlightStep(gameTime)) {
+            return true;
+        }
+
+        Vec3 velocity = player.getDeltaMovement();
+        double nextY;
+        if (!active && headBlocked) {
+            nextY = Math.min(velocity.y, -tracker.maneuver$getJumpPower());
+        } else {
+            nextY = CeilingFlightMath.nextDescentVelocity(
+                    velocity.y,
+                    player.getAbilities().getFlyingSpeed()
+            );
+        }
+
+        player.setDeltaMovement(velocity.x, nextY, velocity.z);
+        tracker.maneuver$setCeilingFlightActive(true, gameTime);
+        player.needsSync = true;
+        return true;
+    }
+
+    public static boolean suppressesGroundJump(Player player) {
+        for (GravityFieldBlockEntity field : FieldRegistry.gravityFields(player.level())) {
+            if (field.getSettings().active()
+                    && field.gravity.y() > 0.0f
+                    && isAffected(player, field.affectCreative)
+                    && field.getVolumeBox().intersects(player.getBoundingBox())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private static boolean isAffected(Entity entity, boolean affectCreative) {
@@ -129,12 +195,12 @@ public final class GravityFieldBlockEntity extends BlockEntity implements Extend
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("offset_x", bounds.offsetX());
-        output.putInt("offset_y", bounds.offsetY());
-        output.putInt("offset_z", bounds.offsetZ());
-        output.putInt("size_x", bounds.sizeX());
-        output.putInt("size_y", bounds.sizeY());
-        output.putInt("size_z", bounds.sizeZ());
+        output.putFloat("offset_x", bounds.offsetX());
+        output.putFloat("offset_y", bounds.offsetY());
+        output.putFloat("offset_z", bounds.offsetZ());
+        output.putFloat("size_x", bounds.sizeX());
+        output.putFloat("size_y", bounds.sizeY());
+        output.putFloat("size_z", bounds.sizeZ());
         output.putFloat("gravity_x", gravity.x());
         output.putFloat("gravity_y", gravity.y());
         output.putFloat("gravity_z", gravity.z());
@@ -146,12 +212,12 @@ public final class GravityFieldBlockEntity extends BlockEntity implements Extend
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         this.bounds = new FieldBounds(
-                input.getIntOr("offset_x", -4),
-                input.getIntOr("offset_y", -2),
-                input.getIntOr("offset_z", -4),
-                input.getIntOr("size_x", 9),
-                input.getIntOr("size_y", 5),
-                input.getIntOr("size_z", 9)
+                input.getFloatOr("offset_x", input.getIntOr("offset_x", -4)),
+                input.getFloatOr("offset_y", input.getIntOr("offset_y", -2)),
+                input.getFloatOr("offset_z", input.getIntOr("offset_z", -4)),
+                input.getFloatOr("size_x", input.getIntOr("size_x", 9)),
+                input.getFloatOr("size_y", input.getIntOr("size_y", 5)),
+                input.getFloatOr("size_z", input.getIntOr("size_z", 9))
         );
         this.gravity = new GravityVector(
                 input.getFloatOr("gravity_x", 0.0f),

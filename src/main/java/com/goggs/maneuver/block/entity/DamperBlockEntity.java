@@ -31,7 +31,7 @@ import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 public final class DamperBlockEntity extends BlockEntity implements ExtendedMenuProvider<DamperData> {
-    private int radius = 6;
+    private float radius = 6.0f;
     private float strength = 0.55f;
     private boolean showRange = true;
     private boolean affectCreative = false;
@@ -127,7 +127,7 @@ public final class DamperBlockEntity extends BlockEntity implements ExtendedMenu
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
-        output.putInt("radius", radius);
+        output.putFloat("radius", radius);
         output.putFloat("strength", strength);
         output.putBoolean("show_range", showRange);
         output.putBoolean("affect_creative", affectCreative);
@@ -136,7 +136,7 @@ public final class DamperBlockEntity extends BlockEntity implements ExtendedMenu
     @Override
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
-        this.radius = input.getIntOr("radius", 6);
+        this.radius = input.getFloatOr("radius", input.getIntOr("radius", 6));
         this.strength = input.getFloatOr("strength", 0.55f);
         this.showRange = input.getBooleanOr("show_range", true);
         this.affectCreative = input.getBooleanOr("affect_creative", false);
