@@ -35,7 +35,7 @@ public final class GravityFieldScreen extends AbstractContainerScreen<GravityFie
             Inventory inventory,
             Component title
     ) {
-        super(menu, inventory, title, 350, 260);
+        super(menu, inventory, title, 350, 276);
         this.active = menu.getSettings().active();
         this.showRange = menu.getSettings().showRange();
         this.affectCreative = menu.getSettings().affectCreative();
@@ -163,25 +163,44 @@ public final class GravityFieldScreen extends AbstractContainerScreen<GravityFie
         graphics.fill(leftPos - 1, topPos - 1, leftPos + imageWidth + 1, topPos + imageHeight + 1, border);
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xF0140D20);
         graphics.fill(leftPos + 10, topPos + 30, leftPos + imageWidth - 10, topPos + 138, 0x80251936);
+    }
 
-        graphics.text(font, title, leftPos + 16, topPos + 12, 0xFFF4ECFF, false);
-        drawRowLabel(graphics, "gui.maneuver.offset", leftPos + 20, topPos + 45);
-        drawRowLabel(graphics, "gui.maneuver.size", leftPos + 20, topPos + 73);
-        drawRowLabel(graphics, "gui.maneuver.gravity", leftPos + 20, topPos + 113);
+    @Override
+    public void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, 16, 12, 0xFFF4ECFF, false);
+        drawRowLabel(graphics, "gui.maneuver.offset", 20, 45);
+        drawRowLabel(graphics, "gui.maneuver.size", 20, 73);
+        drawRowLabel(graphics, "gui.maneuver.gravity", 20, 113);
 
-        drawAxis(graphics, leftPos + 98, topPos + 30);
+        drawAxis(graphics, 98, 30);
 
-        graphics.text(font,
+        int infoY = 196;
+        infoY = drawWrapped(graphics,
                 Component.translatable("gui.maneuver.gravity_help"),
-                leftPos + 20, topPos + 202, 0xFFC9B9EA, false);
-        graphics.text(font,
+                20, infoY, imageWidth - 40, 0xFFC9B9EA);
+        infoY = drawWrapped(graphics,
                 Component.translatable("gui.maneuver.field_bounds_help",
                         FieldBounds.MIN_OFFSET, FieldBounds.MAX_OFFSET,
                         FieldBounds.MIN_SIZE, FieldBounds.MAX_SIZE),
-                leftPos + 20, topPos + 216, 0xFF9E8DBA, false);
+                20, infoY, imageWidth - 40, 0xFF9E8DBA);
         if (!error.getString().isEmpty()) {
-            graphics.text(font, error, leftPos + 20, topPos + 236, 0xFFFF7777, false);
+            drawWrapped(graphics, error, 20, infoY, imageWidth - 40, 0xFFFF7777);
         }
+    }
+
+    private int drawWrapped(
+            GuiGraphicsExtractor graphics,
+            Component text,
+            int textX,
+            int textY,
+            int width,
+            int color
+    ) {
+        for (var line : font.split(text, width)) {
+            graphics.text(font, line, textX, textY, color, false);
+            textY += font.lineHeight + 1;
+        }
+        return textY + 2;
     }
 
     private void drawRowLabel(GuiGraphicsExtractor graphics, String translationKey, int labelX, int labelY) {

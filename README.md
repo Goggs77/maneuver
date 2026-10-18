@@ -95,7 +95,7 @@ system `JAVA_HOME` points at JDK 21.
 The verified build is already available at:
 
 ```text
-build/libs/maneuver-1.0.5.jar
+build/libs/maneuver-1.0.7.jar
 ```
 
 Install it in a Minecraft 26.2 Fabric profile with Fabric API. Rebuild it with:

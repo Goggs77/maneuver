@@ -22,7 +22,7 @@ public final class DamperScreen extends AbstractContainerScreen<DamperScreenHand
     private Component error = Component.empty();
 
     public DamperScreen(DamperScreenHandler menu, Inventory inventory, Component title) {
-        super(menu, inventory, title, 300, 220);
+        super(menu, inventory, title, 300, 244);
         this.active = menu.getSettings().active();
         this.showRange = menu.getSettings().showRange();
         this.affectCreative = menu.getSettings().affectCreative();
@@ -109,23 +109,43 @@ public final class DamperScreen extends AbstractContainerScreen<DamperScreenHand
         graphics.fill(leftPos - 1, topPos - 1, leftPos + imageWidth + 1, topPos + imageHeight + 1, border);
         graphics.fill(leftPos, topPos, leftPos + imageWidth, topPos + imageHeight, 0xF00E1321);
         graphics.fill(leftPos + 10, topPos + 30, leftPos + imageWidth - 10, topPos + 90, 0x80241D3E);
+    }
 
-        graphics.text(font, title, leftPos + 16, topPos + 12, 0xFFF4ECFF, false);
+    @Override
+    public void extractLabels(GuiGraphicsExtractor graphics, int mouseX, int mouseY) {
+        graphics.text(font, title, 16, 12, 0xFFF4ECFF, false);
         graphics.text(font,
                 Component.translatable("gui.maneuver.radius"),
-                leftPos + 20, topPos + 47, 0xFFE9DFFF, false);
+                20, 47, 0xFFE9DFFF, false);
         graphics.text(font,
                 Component.translatable("gui.maneuver.strength"),
-                leftPos + 20, topPos + 75, 0xFFE9DFFF, false);
-        graphics.text(font,
+                20, 75, 0xFFE9DFFF, false);
+
+        int infoY = 164;
+        infoY = drawWrapped(graphics,
                 Component.translatable("gui.maneuver.radius_help", DamperSettings.MAX_RADIUS),
-                leftPos + 20, topPos + 168, 0xFFC9B9EA, false);
-        graphics.text(font,
+                20, infoY, imageWidth - 40, 0xFFC9B9EA);
+        infoY = drawWrapped(graphics,
                 Component.translatable("gui.maneuver.damper_help"),
-                leftPos + 20, topPos + 182, 0xFF9E8DBA, false);
+                20, infoY, imageWidth - 40, 0xFF9E8DBA);
         if (!error.getString().isEmpty()) {
-            graphics.text(font, error, leftPos + 20, topPos + 202, 0xFFFF7777, false);
+            drawWrapped(graphics, error, 20, infoY, imageWidth - 40, 0xFFFF7777);
         }
+    }
+
+    private int drawWrapped(
+            GuiGraphicsExtractor graphics,
+            Component text,
+            int textX,
+            int textY,
+            int width,
+            int color
+    ) {
+        for (var line : font.split(text, width)) {
+            graphics.text(font, line, textX, textY, color, false);
+            textY += font.lineHeight + 1;
+        }
+        return textY + 2;
     }
 
     @Override
